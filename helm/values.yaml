@@ -1,0 +1,25 @@
+nameOverride: ""
+
+adminConfig:
+  JWTSecret: "hello-microservices@123"
+  VERSION: "1.0.0"
+  SKIP_SSL_VERIFY: "false"
+  DBPASSWORD: "asdf"
+  DBUSER: "asdf"
+  DB_SERVER: ""
+  DB_PORT: ""
+
+mongodb:
+  enabled: true
+  auth:
+    enabled: true
+    rootPassword: "superhardpassword"
+    # -- existingSecret Existing secret with MongoDB(&reg;) credentials (keys: `mongodb-passwords`, `mongodb-root-password`, `mongodb-metrics-password`, ` mongodb-replica-set-key`)
+    existingSecret: ""
+  architecture: standalone
+  useStatefulSet: false
+  replicaCount: 1
+  metrics:
+    enabled: false
+    prometheusRule:
+      enabled: false
