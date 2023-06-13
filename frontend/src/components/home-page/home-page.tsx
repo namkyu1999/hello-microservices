@@ -23,6 +23,7 @@ import { Todo } from '../../models/todo';
 import { TodoCard } from '../todo-card';
 import IconButton from '@mui/material/IconButton';
 import Box from '@mui/material/Box';
+import config from '../../config';
 
 type HomePageButtonProps = {
     active: string;
@@ -55,7 +56,7 @@ export const HomePage = () => {
     const { user } = useContext(AuthContext);
     const fetchTodos = () => {
         if (user) {
-            fetch('http://localhost:8001/todo/' + user.username, {
+            fetch(`${config.apiServerEndpoint}/todo/` + user.username, {
                 method: 'GET',
                 headers: {
                     Authorization: 'Bearer ' + user.access_token,
@@ -74,9 +75,8 @@ export const HomePage = () => {
     useEffect(fetchTodos, [user]);
 
     const handleRadioCheck = (todo: Todo) => {
-        //TODO: change api endpoint
         if (user) {
-            fetch('http://localhost:8001/todo', {
+            fetch(`${config.apiServerEndpoint}/todo`, {
                 method: 'PUT',
                 body: JSON.stringify({
                     username: user.username,
@@ -97,9 +97,8 @@ export const HomePage = () => {
     };
 
     const deleteTodo = (todo: Todo) => {
-        //TODO: replace endpoint
         if (user) {
-            fetch('http://localhost:8001/todo', {
+            fetch(`${config.apiServerEndpoint}/todo`, {
                 method: 'DELETE',
                 body: JSON.stringify({
                     username: user.username,
@@ -123,8 +122,7 @@ export const HomePage = () => {
         if (event.key === 'Enter') {
             const inputValue = (event.target as HTMLInputElement).value;
             if (inputValue && user) {
-                //TODO: change api endpoint
-                fetch('http://localhost:8001/todo', {
+                fetch(`${config.apiServerEndpoint}/todo`, {
                     method: 'POST',
                     body: JSON.stringify({
                         username: user.username,

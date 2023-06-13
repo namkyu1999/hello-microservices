@@ -6,6 +6,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardActions from '@mui/material/CardActions';
 import { AuthContext, User } from '../../providers/auth';
+import config from '../../config';
 
 export const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -22,7 +23,7 @@ export const LoginPage = () => {
     };
 
     const signUp = () => {
-        fetch('http://localhost:8080/api/v1/auth/register', {
+        fetch(`${config.auth.url}/api/v1/auth/register`, {
             method: 'POST',
             body: JSON.stringify({
                 email: email,
@@ -52,8 +53,7 @@ export const LoginPage = () => {
     };
 
     const loginWithEmailAndPassword = () => {
-        // TODO: change to env
-        fetch('http://localhost:8080/api/v1/auth/authenticate', {
+        fetch(`${config.auth.url}/api/v1/auth/authenticate`, {
             method: 'POST',
             body: JSON.stringify({
                 email: email,
