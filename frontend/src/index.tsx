@@ -1,9 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import CssBaseline from '@mui/material/CssBaseline';
 import { AppRouterProvider } from './providers/route';
 import { AuthProvider } from './providers/auth';
-import CssBaseline from '@mui/material/CssBaseline';
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement

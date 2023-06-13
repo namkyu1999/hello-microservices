@@ -1,4 +1,4 @@
-import React, { createContext, FC, ReactNode, useState } from 'react';
+import React, { createContext, FC, ReactNode, useMemo, useState } from 'react';
 
 export type User = {
     username: string;
@@ -41,12 +41,14 @@ export const AuthProvider: FC<Props> = ({ children }) => {
         sessionStorage.removeItem('user');
         setUser(null);
     };
-
-    const value = {
-        user,
-        setUser: setToStorage,
-        signOut: removeFromStorage,
-    };
+    const value = useMemo(
+        () => ({
+            user,
+            setUser: setToStorage,
+            signOut: removeFromStorage,
+        }),
+        [user]
+    );
 
     return (
         <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

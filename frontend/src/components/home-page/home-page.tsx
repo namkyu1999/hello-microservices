@@ -16,28 +16,28 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import Box from '@mui/material/Box';
 import { CheckIcon, CrossIcon } from '../icons';
 import { AuthContext } from '../../providers/auth';
 import { AddTodo } from '../add-todo';
 import { Todo } from '../../models/todo';
 import { TodoCard } from '../todo-card';
-import IconButton from '@mui/material/IconButton';
-import Box from '@mui/material/Box';
 import config from '../../config';
 
 type HomePageButtonProps = {
     active: string;
     children: ReactNode;
-    onClick?: () => void;
+    onClick: () => void;
 };
 const HomePageButton: FC<HomePageButtonProps> = (props) => {
-    const { active = 'false' } = props;
+    const { active = 'false', children } = props;
     return (
         <Button
-            sx={{ color: active == 'true' ? 'info.light' : 'text.secondary' }}
+            sx={{ color: active === 'true' ? 'info.light' : 'text.secondary' }}
             {...props}
         >
-            {props.children}
+            {children}
         </Button>
     );
 };
@@ -47,7 +47,7 @@ enum FilterState {
     COMPLETED = 'Completed',
 }
 
-export const HomePage = () => {
+export function HomePage() {
     const [todos, setTodos] = useState<Todo[] | null>(null);
     const [activeFilter, setActiveFilter] = useState<FilterState>(
         FilterState.ACTIVE
@@ -56,10 +56,10 @@ export const HomePage = () => {
     const { user } = useContext(AuthContext);
     const fetchTodos = () => {
         if (user) {
-            fetch(`${config.apiServerEndpoint}/todo/` + user.username, {
+            fetch(`${config.apiServerEndpoint}/todo/${user.username}`, {
                 method: 'GET',
                 headers: {
-                    Authorization: 'Bearer ' + user.access_token,
+                    Authorization: `Bearer ${user.access_token}`,
                 },
             })
                 .then((res) => res.json())
@@ -67,7 +67,7 @@ export const HomePage = () => {
                     setTodos(resTodos);
                 })
                 .catch((err) => {
-                    console.log(err.message);
+                    console.log(err.message); // eslint-disable-line no-console
                 });
         }
     };
@@ -83,16 +83,12 @@ export const HomePage = () => {
                     id: todo.id,
                 }),
                 headers: {
-                    Authorization: 'Bearer ' + user.access_token,
+                    Authorization: `Bearer ${user.access_token}`,
                     ContentType: 'application/json',
                 },
-            })
-                .then(() => {
-                    fetchTodos();
-                })
-                .catch((err) => {
-                    console.log(err.message);
-                });
+            }).then(() => {
+                fetchTodos();
+            });
         }
     };
 
@@ -105,7 +101,7 @@ export const HomePage = () => {
                     id: todo.id,
                 }),
                 headers: {
-                    Authorization: 'Bearer ' + user.access_token,
+                    Authorization: `Bearer ${user.access_token}`,
                     ContentType: 'application/json',
                 },
             })
@@ -113,7 +109,7 @@ export const HomePage = () => {
                     fetchTodos();
                 })
                 .catch((err) => {
-                    console.log(err.message);
+                    console.log(err.message); // eslint-disable-line no-console
                 });
         }
     };
@@ -129,16 +125,16 @@ export const HomePage = () => {
                         body: inputValue,
                     }),
                     headers: {
-                        Authorization: 'Bearer ' + user.access_token,
+                        Authorization: `Bearer ${user.access_token}`,
                         ContentType: 'application/json',
                     },
                 })
                     .then(() => {
-                        (event.target as HTMLInputElement).value = '';
+                        (event.target as HTMLInputElement).value = ''; // eslint-disable-line no-param-reassign
                         fetchTodos();
                     })
                     .catch((err) => {
-                        console.log(err.message);
+                        console.log(err.message); // eslint-disable-line no-console
                     });
             }
         }
@@ -146,8 +142,7 @@ export const HomePage = () => {
 
     const activeTodos = todos?.filter((todo) => !todo.completed) ?? [];
     const filteredTodos = todos?.filter((todo) => {
-        const filterCondition =
-            activeFilter === FilterState.ACTIVE ? false : true;
+        const filterCondition = activeFilter !== FilterState.ACTIVE;
 
         return todo.completed === filterCondition;
     });
@@ -217,7 +212,7 @@ export const HomePage = () => {
                 <CardActions>
                     <Grid
                         container
-                        alignItems={'center'}
+                        alignItems="center"
                         justifyContent="space-between"
                     >
                         <Box component="span">
@@ -285,4 +280,4 @@ export const HomePage = () => {
             )}
         </div>
     );
-};
+}

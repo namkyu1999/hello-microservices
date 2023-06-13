@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hello-microservices.fullname" . }}-frontend
+  namespace:  {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/component: {{ include "hello-microservices.name" . }}-frontend
+    {{- include "hello-microservices.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.frontend.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: {{ include "hello-microservices.name" . }}-frontend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: {{ include "hello-microservices.name" . }}-frontend
+        {{- include "hello-microservices.labels" . | nindent 8 }}
+    spec:
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: {{ include "hello-microservices.fullname" . }}-frontend-nginx-configuration
+      containers:
+        - name: hm-frontend
+          image: {{ .Values.frontend.image.repository }}:{{ .Values.frontend.image.tag }}
+          imagePullPolicy: {{ .Values.frontend.image.pullPolicy }}
+          resources:
+            {{- toYaml .Values.frontend.resources | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.frontend.securityContext | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: http
+            {{- toYaml .Values.frontend.livenessProbe | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: http
+            {{- toYaml .Values.frontend.readinessProbe | nindent 12 }}
+          ports:
+            - containerPort: {{ .Values.frontend.containerPort }}
+              name: http
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf

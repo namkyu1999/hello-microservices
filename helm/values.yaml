@@ -4,10 +4,12 @@ adminConfig:
   JWTSecret: "hello-microservices@123"
   VERSION: "1.0.0"
   SKIP_SSL_VERIFY: "false"
-  DBPASSWORD: "asdf"
-  DBUSER: "asdf"
-  DB_SERVER: ""
-  DB_PORT: ""
+  MONGO_DB_USER: "admin"
+  MONGO_DB_PASSWORD: "1234"
+  MONGO_DB_SERVER: "mongo-service"
+  MONGO_DB_PORT: "27017"
+  POSTGRES_DB_SERVER: "postgresql"
+  POSTGRES_DB_PORT: "5432"
 
 mongodb:
   enabled: true
@@ -23,3 +25,141 @@ mongodb:
     enabled: false
     prometheusRule:
       enabled: false
+
+postgresql:
+  enabled: true
+  auth:
+    postgresPassword: "superhardpassword"
+    username: "admin"
+    password: "1234"
+    database: "jwt_security"
+
+frontend:
+  containerPort: 8080
+  image:
+    repository: lak9348/hm-frontend-server
+    tag: v1.0.0
+    pullPolicy: "Always"
+  replicas: 2
+  service:
+    type: NodePort
+    port: 9091
+    targetPort: 8080
+  livenessProbe:
+    failureThreshold: 5
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 5
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    successThreshold: 1
+    timeoutSeconds: 1
+  securityContext: {}
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    requests:
+      memory: "150Mi"
+      cpu: "125m"
+      ephemeral-storage: "500Mi"
+    limits:
+      memory: "512Mi"
+      cpu: "550m"
+      ephemeral-storage: "1Gi"
+backend:
+  APIServer:
+    replicas: 2
+    serviceAccountName: hello-microservices-account
+    ports:
+      - name: http
+        containerPort: 8001
+    image:
+      repository: lak9348/hm-api-server
+      tag: v0.0.1
+      pullPolicy: "Always"
+    service:
+      type: ClusterIP
+      apiHTTPServer:
+        port: 9002
+        targetPort: 8001
+    resources:
+      requests:
+        memory: "250Mi"
+        cpu: "225m"
+        ephemeral-storage: "500Mi"
+      limits:
+        memory: "712Mi"
+        cpu: "550m"
+        ephemeral-storage: "1Gi"
+    livenessProbe:
+      failureThreshold: 5
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    readinessProbe:
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    securityContext:
+      runAsUser: 2000
+      allowPrivilegeEscalation: false
+      runAsNonRoot: true
+    waitForMongodb:
+      image:
+        repository: litmuschaos/curl
+        tag: 2.14.0
+        pullPolicy: "Always"
+      resources:
+        requests:
+          memory: "150Mi"
+          cpu: "25m"
+          ephemeral-storage: "500Mi"
+        limits:
+          memory: "512Mi"
+          cpu: "250m"
+          ephemeral-storage: "1Gi"
+  AuthServer:
+    replicas: 2
+    serviceAccountName: hello-microservices-account
+    ports:
+      - name: http
+        containerPort: 8080
+    image:
+      repository: lak9348/hm-auth-server
+      tag: v1.0.0
+      pullPolicy: "Always"
+    service:
+      type: ClusterIP
+      apiHTTPServer:
+        port: 9003
+        targetPort: 8080
+    resources:
+      requests:
+        memory: "250Mi"
+        cpu: "225m"
+        ephemeral-storage: "500Mi"
+      limits:
+        memory: "712Mi"
+        cpu: "550m"
+        ephemeral-storage: "1Gi"
+    livenessProbe:
+      failureThreshold: 5
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    readinessProbe:
+      initialDelaySeconds: 5
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 1
+    securityContext:
+      runAsUser: 2000
+      allowPrivilegeEscalation: false
+      runAsNonRoot: true

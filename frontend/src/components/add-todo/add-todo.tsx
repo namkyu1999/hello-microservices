@@ -1,4 +1,4 @@
-import React, { FC, KeyboardEvent, ReactNode, useContext } from 'react';
+import React, { FC, KeyboardEvent } from 'react';
 import Box from '@mui/material/Box';
 import CardContent from '@mui/material/CardContent';
 import TextField from '@mui/material/TextField';
@@ -9,6 +9,7 @@ type AddTodoProps = {
 };
 
 export const AddTodo: FC<AddTodoProps> = (props) => {
+    const { onKeyPress } = props;
     return (
         <TodoCard>
             <CardContent
@@ -28,7 +29,7 @@ export const AddTodo: FC<AddTodoProps> = (props) => {
                         fullWidth
                         label="Add Todo"
                         variant="standard"
-                        onKeyPress={props.onKeyPress}
+                        onKeyPress={onKeyPress}
                     />
                 </Box>
             </CardContent>

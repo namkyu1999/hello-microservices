@@ -41,6 +41,13 @@
     "jsx-a11y/href-no-hash": ["off"],
     "jest/no-conditional-expect": ["off"],
     "react/jsx-props-no-spreading": ["off"],
+    "react/function-component-definition":[
+      2,
+      { "namedComponents": [
+        "arrow-function",
+        "function-declaration"
+      ] }
+    ],
     "react/jsx-filename-extension": [
       "warn",
       { "extensions": [".js", ".jsx", ".ts", ".tsx"] }

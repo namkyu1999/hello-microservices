@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "*", allowedHeaders = "*")
-@RequestMapping("/")
+@RequestMapping("/status")
 @RequiredArgsConstructor
 public class ReadinessController {
-    @GetMapping("/status")
+    @GetMapping
     public ResponseEntity status(){
         return ResponseEntity.ok().build();
     }

@@ -1,6 +1,7 @@
 import SvgIcon from '@mui/material/SvgIcon';
+import React from 'react';
 import { ReactComponent as CrossIconSvg } from '../../images/icon-cross.svg';
 
-export const CrossIcon = () => {
+export function CrossIcon() {
     return <SvgIcon component={CrossIconSvg} inheritViewBox />;
-};
+}

@@ -6,3 +6,8 @@ version: 1.0.0
 home: https://namkyupark.tech
 sources:
   - https://github.com/namkyu1999/hello-microservices
+dependencies:
+  - name: postgresql
+    repository: https://charts.bitnami.com/bitnami
+    version: 12.5.7
+    condition: postgresql.enabled

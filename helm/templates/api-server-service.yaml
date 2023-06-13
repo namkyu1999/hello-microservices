@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "hello-microservices.fullname" . }}-api-server-service
+  namespace:  {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/component: {{ include "hello-microservices.name" . }}-api-server
+spec:
+  type: {{ .Values.backend.APIServer.service.type }}
+  ports:
+    - name: http-server
+      port: {{ .Values.backend.APIServer.service.apiHTTPServer.port }}
+      targetPort: {{ .Values.backend.APIServer.service.apiHTTPServer.targetPort }}
+  selector:
+    app.kubernetes.io/component: {{ include "hello-microservices.name" . }}-api-server

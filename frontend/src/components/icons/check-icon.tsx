@@ -1,7 +1,8 @@
 import SvgIcon from '@mui/material/SvgIcon';
+import React from 'react';
 import { ReactComponent as CheckIconSvg } from '../../images/icon-check.svg';
 
-export const CheckIcon = () => {
+export function CheckIcon() {
     return (
         <SvgIcon
             sx={{
@@ -17,4 +18,4 @@ export const CheckIcon = () => {
             inheritViewBox
         />
     );
-};
+}

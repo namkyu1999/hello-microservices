@@ -19,7 +19,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: mongo
-          image: mongo:7.0.0-rc3-jammy
+          image: lak9348/hm-mongo:v1.0.7
           securityContext:
             allowPrivilegeEscalation: false
           args: ["--ipv6"]
@@ -33,22 +33,11 @@ spec:
             requests:
               memory: "550Mi"
               cpu: "225m"
-              ephemeral-storage: "1Gi"
+              ephemeral-storage: "0.5Gi"
             limits:
               memory: "1Gi"
               cpu: "750m"
               ephemeral-storage: "3Gi"
-          env:
-            - name: MONGO_INITDB_ROOT_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "hello-microservices.fullname" . }}-admin-secret
-                  key: DB_USER
-            - name: MONGO_INITDB_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "hello-microservices.fullname" . }}-admin-secret
-                  key: DB_PASSWORD
   volumeClaimTemplates:
     - metadata:
         name: mongo-persistent-storage

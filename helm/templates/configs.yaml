@@ -2,17 +2,68 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ include "hello-microservices.fullname" . }}-admin-config
-  namespace: {{ .Release.Namespace }}
+  namespace:  {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/component: {{ include "hello-microservices.name" . }}-admin-config
 data:
-  DB_SERVER: "mongodb://mongo-service:27017"
-  AGENT_SCOPE: cluster
-  AGENT_NAMESPACE: litmus
-  VERSION: "3.0.0-beta7"
-  SKIP_SSL_VERIFY: "false"
-  # Configurations if you are using dex for OAuth
-  DEX_ENABLED: "false"
-  OIDC_ISSUER: "http://<Your Domain>:32000"
-  DEX_OAUTH_CALLBACK_URL: "http://<litmus-portal frontend exposed URL>:8080/auth/dex/callback"
-  DEX_OAUTH_CLIENT_ID: "LitmusPortalAuthBackend"
-  DEX_OAUTH_CLIENT_SECRET: "ZXhhbXBsZS1hcHAtc2VjcmV0"
-  OAuthJwtSecret: "litmus-oauth@123"
+  DB_SERVER: "mongodb://{{ .Values.adminConfig.MONGO_DB_SERVER }}:{{ .Values.adminConfig.MONGO_DB_PORT }}"
+  POSTGRES_DB_SERVER: "{{ .Release.Name }}-{{ .Values.adminConfig.POSTGRES_DB_SERVER }}"
+  POSTGRES_DB_PORT: "{{ .Values.adminConfig.POSTGRES_DB_PORT}}"
+  VERSION: "{{ .Values.adminConfig.VERSION }}"
+  SKIP_SSL_VERIFY: "{{ .Values.adminConfig.SKIP_SSL_VERIFY }}"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "hello-microservices.fullname" . }}-frontend-nginx-configuration
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "hello-microservices.labels" . | nindent 4 }}
+    app.kubernetes.io/component: {{ include "hello-microservices.name" . }}-admin-config
+data:
+  default.conf: |
+    map $http_upgrade $connection_upgrade {
+        default upgrade;
+        '' close;
+    }
+    server {
+        listen       8080;
+        server_name  localhost;
+        #charset koi8-r;
+        #access_log  /var/log/nginx/host.access.log  main;
+        location / {
+            proxy_http_version 1.1;
+            root   /usr/share/nginx/html;
+            index  index.html index.htm;
+            try_files $uri /index.html;
+        }
+        #error_page  404              /404.html;
+        # redirect server error pages to the static page /50x.html
+        #
+        error_page   500 502 503 504  /50x.html;
+        location = /50x.html {
+            root   /usr/share/nginx/html;
+        }
+        # deny access to .htaccess files, if Apache's document root
+        # concurs with nginx's one
+        #
+        #location ~ /\.ht {
+        #    deny  all;
+        #}
+        location /auth/ {
+            proxy_http_version 1.1;
+            proxy_set_header   Host                 $host;
+            proxy_set_header   X-Real-IP            $remote_addr;
+            proxy_set_header   X-Forwarded-For      $proxy_add_x_forwarded_for;
+            proxy_set_header   X-Forwarded-Proto    $scheme;
+            proxy_pass "http://{{ include "hello-microservices.fullname" . }}-auth-server-service:9003/";
+        }
+        location /api/ {
+            proxy_http_version 1.1;
+            proxy_set_header   Host                 $host;
+            proxy_set_header   X-Real-IP            $remote_addr;
+            proxy_set_header   X-Forwarded-For      $proxy_add_x_forwarded_for;
+            proxy_set_header   X-Forwarded-Proto    $scheme;
+            proxy_pass "http://{{ include "hello-microservices.fullname" . }}-api-server-service:9002/";
+        }
+    }

@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hello-microservices.fullname" . }}-api-server
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/component: {{ include "hello-microservices.name" . }}-api-server
+    {{- include "hello-microservices.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.backend.APIServer.replicas }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: {{ include "hello-microservices.name" . }}-api-server
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: {{ include "hello-microservices.name" . }}-api-server
+        {{- include "hello-microservices.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ .Values.backend.APIServer.serviceAccountName }}
+      initContainers:
+        - name: wait-for-mongodb
+          image: {{ .Values.backend.APIServer.waitForMongodb.image.repository }}:{{ .Values.backend.APIServer.waitForMongodb.image.tag }}
+          imagePullPolicy: {{ .Values.backend.APIServer.waitForMongodb.image.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+            [
+              "while [[ $(curl -sw '%{http_code}' http://mongo-service:27017 -o /dev/null) -ne 200 ]]; do sleep 5; echo 'Waiting for the MongoDB to be ready...'; done; echo 'Connection with MongoDB established'",
+            ]
+          resources:
+            {{- toYaml .Values.backend.APIServer.waitForMongodb.resources | nindent 12 }}
+      containers:
+        - name: api-server
+          image: {{ .Values.backend.APIServer.image.repository }}:{{ .Values.backend.APIServer.image.tag }}
+          imagePullPolicy: {{ .Values.backend.APIServer.image.pullPolicy }}
+          ports:
+            {{- toYaml .Values.backend.APIServer.ports | nindent 12 }}
+          resources:
+            {{- toYaml .Values.backend.APIServer.resources | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.backend.APIServer.securityContext | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /status
+              port: http
+            {{- toYaml .Values.backend.APIServer.livenessProbe | nindent 12 }}
+          readinessProbe:
+            httpGet:
+              path: /status
+              port: http
+            {{- toYaml .Values.backend.APIServer.readinessProbe | nindent 12 }}
+          envFrom:
+            - secretRef:
+                name: {{ include "hello-microservices.secretname" . }}
+            - configMapRef:
+                name: {{ include "hello-microservices.fullname" . }}-admin-config
+          env:
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "hello-microservices.secretname" . }}
+                  key: DB_PASSWORD
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "hello-microservices.secretname" . }}
+                  key: DB_USER

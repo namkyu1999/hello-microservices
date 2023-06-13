@@ -1,13 +1,12 @@
 import React, { useContext } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
-import { AuthContext } from '../../providers/auth';
 import Button from '@mui/material/Button';
-import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../providers/auth';
 import './header.css';
 import config from '../../config';
 
-export const Header = () => {
+export function Header() {
     const { user, signOut } = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
@@ -18,10 +17,10 @@ export const Header = () => {
         fetch(`${config.auth.url}/api/v1/auth/logout`, {
             method: 'GET',
             headers: {
-                Authorization: 'Bearer ' + user?.access_token,
+                Authorization: `Bearer ${user?.access_token}`,
             },
         });
-        signOut && signOut();
+        signOut && signOut(); // eslint-disable-line no-unused-expressions
         navigate('/login');
     };
 
@@ -34,9 +33,9 @@ export const Header = () => {
                     <Link to="/login">Login</Link>
                 )}
             </Grid>
-            <Grid container justifyContent={'space-between'} mt={5} mb={3}>
+            <Grid container justifyContent="space-between" mt={5} mb={3}>
                 <h1 className="app-header">{headerText}</h1>
             </Grid>
         </header>
     );
-};
+}

@@ -10,8 +10,8 @@ export const ProtectedRoute: FC<Props> = ({ children }) => {
     const { user } = useContext(AuthContext);
 
     if (!user) {
-        return <Navigate to="/login" replace={true} />;
+        return <Navigate to="/login" replace />;
     }
 
-    return <>{children}</>;
+    return <>{children}</>; // eslint-disable-line react/jsx-no-useless-fragment
 };

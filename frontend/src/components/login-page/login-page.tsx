@@ -8,7 +8,7 @@ import CardActions from '@mui/material/CardActions';
 import { AuthContext, User } from '../../providers/auth';
 import config from '../../config';
 
-export const LoginPage = () => {
+export function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const { setUser } = useContext(AuthContext);
@@ -26,8 +26,8 @@ export const LoginPage = () => {
         fetch(`${config.auth.url}/api/v1/auth/register`, {
             method: 'POST',
             body: JSON.stringify({
-                email: email,
-                password: password,
+                email,
+                password,
             }),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
@@ -36,19 +36,18 @@ export const LoginPage = () => {
             .then((response) => {
                 if (response.ok) {
                     return response.json();
-                } else {
-                    alert('check your information');
                 }
+                alert('check your information'); // eslint-disable-line no-alert
+                return response.json();
             })
             .then((user: User) => {
-                console.log(user);
                 if (user && setUser) {
                     setUser(user);
                     navigate('/');
                 }
             })
             .catch((err) => {
-                console.log(err.message);
+                console.log(err.message); // eslint-disable-line no-console
             });
     };
 
@@ -56,8 +55,8 @@ export const LoginPage = () => {
         fetch(`${config.auth.url}/api/v1/auth/authenticate`, {
             method: 'POST',
             body: JSON.stringify({
-                email: email,
-                password: password,
+                email,
+                password,
             }),
             headers: {
                 'Content-type': 'application/json; charset=UTF-8',
@@ -66,9 +65,9 @@ export const LoginPage = () => {
             .then((response) => {
                 if (response.ok) {
                     return response.json();
-                } else {
-                    alert('check your information');
                 }
+                alert('check your information'); // eslint-disable-line no-alert
+                return response.json();
             })
             .then((user: User) => {
                 if (user && setUser) {
@@ -77,7 +76,7 @@ export const LoginPage = () => {
                 }
             })
             .catch((err) => {
-                console.log(err.message);
+                console.log(err.message); // eslint-disable-line no-console
             });
     };
 
@@ -103,9 +102,9 @@ export const LoginPage = () => {
                 />
             </CardContent>
             <CardActions>
-                {/*<Button color="secondary" variant="text" onClick={signUp}>*/}
-                {/*    Signup*/}
-                {/*</Button>*/}
+                {/* <Button color="secondary" variant="text" onClick={signUp}> */}
+                {/*    Signup */}
+                {/* </Button> */}
                 <Button variant="text" onClick={loginWithEmailAndPassword}>
                     Login
                 </Button>
@@ -115,4 +114,4 @@ export const LoginPage = () => {
             </CardActions>
         </Card>
     );
-};
+}

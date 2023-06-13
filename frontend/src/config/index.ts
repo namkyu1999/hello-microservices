@@ -1,4 +1,3 @@
-const loc = window.location;
 let authURL;
 let apiURL;
 
