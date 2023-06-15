@@ -19,7 +19,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: mongo
-          image: lak9348/hm-mongo:v1.0.7
+          image: lak9348/hm-mongo:v1.1.0
           securityContext:
             allowPrivilegeEscalation: false
           args: ["--ipv6"]

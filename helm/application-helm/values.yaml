@@ -163,3 +163,6 @@ backend:
       runAsUser: 2000
       allowPrivilegeEscalation: false
       runAsNonRoot: true
+traefikIngress:
+  enabled: true
+  domain: namkyupark.tech

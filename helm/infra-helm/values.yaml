@@ -1,0 +1,4 @@
+traefikIngress:
+  enabled: true
+  domain: namkyupark.tech
+  traefikIP: 34.64.79.65
