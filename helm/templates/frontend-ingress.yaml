@@ -1,0 +1,21 @@
+{{/*{{ if .Values.traefikIngress.enabled }}*/}}
+{{/*apiVersion: networking.k8s.io/v1*/}}
+{{/*kind: Ingress*/}}
+{{/*metadata:*/}}
+{{/*  name: {{ include "hello-microservices.fullname" . }}-frontend-ingress*/}}
+{{/*  namespace: {{ .Release.Namespace }}*/}}
+{{/*  labels:*/}}
+{{/*    app.kubernetes.io/component: {{ include "hello-microservices.name" . }}-ingress*/}}
+{{/*spec:*/}}
+{{/*  rules:*/}}
+{{/*    - host: "todo.{{ .Values.traefikIngress.domain }}"*/}}
+{{/*      http:*/}}
+{{/*        paths:*/}}
+{{/*          - path: /*/}}
+{{/*            pathType: Prefix*/}}
+{{/*            backend:*/}}
+{{/*              service:*/}}
+{{/*                name: {{ include "hello-microservices.fullname" . }}-frontend-service*/}}
+{{/*                port:*/}}
+{{/*                  name: http*/}}
+{{/*{{ end }}*/}}

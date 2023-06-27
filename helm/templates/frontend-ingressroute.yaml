@@ -1,0 +1,29 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "hello-microservices.fullname" . }}-frontend
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`todo.{{ .Values.adminConfig.DOMAIN_NAME }}`)
+      kind: Rule
+      services:
+        - name: {{ include "hello-microservices.fullname" . }}-frontend-service
+          port: {{ .Values.frontend.service.port }}
+  tls:
+    secretName: todo.{{ .Values.adminConfig.DOMAIN_NAME }}
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: todo.{{ .Values.adminConfig.DOMAIN_NAME }}
+spec:
+  dnsNames:
+    - todo.{{ .Values.adminConfig.DOMAIN_NAME }}
+  secretName: todo.{{ .Values.adminConfig.DOMAIN_NAME }}
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer

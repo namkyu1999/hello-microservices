@@ -10,6 +10,8 @@ adminConfig:
   MONGO_DB_PORT: "27017"
   POSTGRES_DB_SERVER: "postgresql"
   POSTGRES_DB_PORT: "5432"
+  DOMAIN_NAME: "namkyupark.tech"
+  EMAIL: "lak9348@gmail.com"
 
 mongodb:
   enabled: true
@@ -40,7 +42,7 @@ frontend:
     repository: lak9348/hm-frontend-server
     tag: v1.0.0
     pullPolicy: "Always"
-  replicas: 2
+  replicas: 1
   service:
     type: NodePort
     port: 9091
@@ -65,21 +67,21 @@ frontend:
     requests:
       memory: "150Mi"
       cpu: "125m"
-      ephemeral-storage: "500Mi"
+      ephemeral-storage: "100Mi"
     limits:
-      memory: "512Mi"
-      cpu: "550m"
-      ephemeral-storage: "1Gi"
+      memory: "150Mi"
+      cpu: "125m"
+      ephemeral-storage: "100Mi"
 backend:
   APIServer:
-    replicas: 2
+    replicas: 1
     serviceAccountName: hello-microservices-account
     ports:
       - name: http
         containerPort: 8001
     image:
       repository: lak9348/hm-api-server
-      tag: v0.0.1
+      tag: latest
       pullPolicy: "Always"
     service:
       type: ClusterIP
@@ -88,13 +90,13 @@ backend:
         targetPort: 8001
     resources:
       requests:
-        memory: "250Mi"
-        cpu: "225m"
-        ephemeral-storage: "500Mi"
+        memory: "150Mi"
+        cpu: "125m"
+        ephemeral-storage: "100Mi"
       limits:
-        memory: "712Mi"
-        cpu: "550m"
-        ephemeral-storage: "1Gi"
+        memory: "150Mi"
+        cpu: "125m"
+        ephemeral-storage: "100Mi"
     livenessProbe:
       failureThreshold: 5
       initialDelaySeconds: 30
@@ -118,21 +120,21 @@ backend:
       resources:
         requests:
           memory: "150Mi"
-          cpu: "25m"
-          ephemeral-storage: "500Mi"
+          cpu: "125m"
+          ephemeral-storage: "100Mi"
         limits:
-          memory: "512Mi"
-          cpu: "250m"
-          ephemeral-storage: "1Gi"
+          memory: "150Mi"
+          cpu: "125m"
+          ephemeral-storage: "100Mi"
   AuthServer:
-    replicas: 2
+    replicas: 1
     serviceAccountName: hello-microservices-account
     ports:
       - name: http
         containerPort: 8080
     image:
       repository: lak9348/hm-auth-server
-      tag: v1.0.0
+      tag: latest
       pullPolicy: "Always"
     service:
       type: ClusterIP
@@ -141,21 +143,18 @@ backend:
         targetPort: 8080
     resources:
       requests:
-        memory: "250Mi"
-        cpu: "225m"
-        ephemeral-storage: "500Mi"
-      limits:
-        memory: "712Mi"
-        cpu: "550m"
-        ephemeral-storage: "1Gi"
+        memory: "150Mi"
+        cpu: "125m"
+        ephemeral-storage: "100Mi"
     livenessProbe:
       failureThreshold: 5
-      initialDelaySeconds: 30
+      initialDelaySeconds: 60
       periodSeconds: 10
       successThreshold: 1
       timeoutSeconds: 5
     readinessProbe:
-      initialDelaySeconds: 5
+      failureThreshold: 5
+      initialDelaySeconds: 60
       periodSeconds: 10
       successThreshold: 1
       timeoutSeconds: 1
@@ -163,6 +162,3 @@ backend:
       runAsUser: 2000
       allowPrivilegeEscalation: false
       runAsNonRoot: true
-traefikIngress:
-  enabled: true
-  domain: namkyupark.tech

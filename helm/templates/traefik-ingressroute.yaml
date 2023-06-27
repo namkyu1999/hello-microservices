@@ -1,0 +1,81 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: auth
+  namespace: traefik-system
+spec:
+  basicAuth:
+    secret: traefik-auth
+
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: traefik-auth
+  namespace: traefik-system
+data:
+  users: |1
+   dmlld2VyOiRhcHIxJEdSbS5YUU1GJDVFTTdlSTRoTHRQTVZRL2RvakI0Uy8KCg==
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: traefik-dashboard
+  namespace: traefik-system
+spec:
+  entryPoints:
+    - web
+    - websecure
+  routes:
+    - match: Host(`traefik.{{ .Values.adminConfig.DOMAIN_NAME }}`)
+      kind: Rule
+      services:
+        - name: api@internal
+          kind: TraefikService
+      middlewares:
+        - name: auth
+  tls:
+    secretName: traefik.{{ .Values.adminConfig.DOMAIN_NAME }}
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: {{ .Values.adminConfig.EMAIL }}
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    solvers:
+      - http01:
+          ingress:
+            class: traefik
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-production
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    email: {{ .Values.adminConfig.EMAIL }}
+    privateKeySecretRef:
+      name: letsencrypt-production
+    solvers:
+      - http01:
+          ingress:
+            class: traefik
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: traefik.{{ .Values.adminConfig.DOMAIN_NAME }}
+  namespace: traefik-system
+spec:
+  dnsNames:
+    - traefik.{{ .Values.adminConfig.DOMAIN_NAME }}
+  secretName: traefik.{{ .Values.adminConfig.DOMAIN_NAME }}
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
