@@ -28,6 +28,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: argocd.{{ .Values.adminConfig.DOMAIN_NAME }}
+  namespace: argocd
 spec:
   dnsNames:
     - argocd.{{ .Values.adminConfig.DOMAIN_NAME }}

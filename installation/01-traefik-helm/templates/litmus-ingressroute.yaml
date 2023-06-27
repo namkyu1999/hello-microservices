@@ -1,0 +1,38 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: litmus
+  namespace: litmus
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - kind: Rule
+      match: Host(`litmus.{{ .Values.adminConfig.DOMAIN_NAME }}`)
+      priority: 10
+      services:
+        - name: litmusportal-frontend-service
+          port: 9091
+    - kind: Rule
+      match: Host(`litmus.{{ .Values.adminConfig.DOMAIN_NAME }}`) && Headers(`Content-Type`, `application/grpc`)
+      priority: 11
+      services:
+        - name: litmus-server
+          port: 443
+          scheme: h2c
+  tls:
+    secretName: litmus.{{ .Values.adminConfig.DOMAIN_NAME }}
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: litmus.{{ .Values.adminConfig.DOMAIN_NAME }}
+  namespace: litmus
+spec:
+  dnsNames:
+    - litmus.{{ .Values.adminConfig.DOMAIN_NAME }}
+  secretName: litmus.{{ .Values.adminConfig.DOMAIN_NAME }}
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
