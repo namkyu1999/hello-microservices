@@ -42,6 +42,12 @@ A TODO application with a microservice architecture.
     --account username \
     --current-password admin-password \
     --new-password new-password
+   # edit RBAC
+   kubectl edit configmap argocd-rbac-cm -n argocd
+   # data:
+   # policy.csv: |
+   #    g, new-username, role:admin # you can set role what you want
+   #    policy.default: role:''
    ```
 7. install cert-manager
    ```shell
