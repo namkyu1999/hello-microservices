@@ -1,0 +1,13 @@
+apiVersion: v1
+appVersion: "1.0.0"
+description: A Helm chart to install traefik application
+name: hello-microservices-traefik
+version: 1.0.0
+home: https://traefik.namkyupark.tech
+sources:
+  - https://github.com/namkyu1999/hello-microservices
+dependencies:
+  - name: traefik
+    repository: https://helm.traefik.io/traefik
+    version: 23.1.0
+    condition: traefik.enabled

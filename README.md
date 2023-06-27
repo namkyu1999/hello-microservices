@@ -1,33 +1,56 @@
 # Hello 👋 Microservices
-A TODO application with a microservices architecture.
+A TODO application with a microservice architecture.
+
+## Demo
+- **TODO application -> https://todo.namkyupark.tech**
+- **ArgoCD UI Dashboard -> https://argocd.namkyupark.tech**
+- **Traefik UI Dashboard -> https://traefik.namkyupark.tech/dashboard/#/**
+
 
 ## Architecture Diagram
-<img width="2336" alt="architecture" src="https://github.com/namkyu1999/hello-microservices/assets/53862866/61d9c396-638d-4e5e-b7ca-e7691fc3cddd">
-
+![architecture_diagram](assets/architecture.png)
 ## Prerequisites
 - buy your domain
 - create your GCP project
+- install helm, argocd cli tools
 
 ## How to start
-
-1. setup ENV
-2. setup GKE cluster
+1. complete prerequisites
+2. setup Kubernetes Cluster
 3. install ArgoCD
+    ```shell
+    # quick start guide: https://argo-cd.readthedocs.io/en/stable/
+    kubectl create namespace argocd
+    kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+    ```
 4. install traefik
     ```shell
-    cd ./helm
-    helm repo add traefik https://helm.traefik.io/traefik
-    helm repo update
-    helm install --namespace=traefik-system --create-namespace traefik traefik/traefik -f traefik-values.yaml
+    cd ./installation/01-traefik
+    helm install traefik . -n traefik-system --create-namespace
     ```
 5. buy domain name & setup Cloud DNS
-6. install cert-manager
+   > set 'A record' to traefik external IP
+   ![a_record](assets/a_record.png)
+6. Access to ArgoCD UI
+   ```shell
+   # access to ArgoCD UI via https://argocd.your.domain
+   # setup user
+   kubectl edit configmap argocd-cm -n argocd
+   # data:
+   #   accounts.username: apiKey, login
+   argocd account update-password \
+    --account username \
+    --current-password admin-password \
+    --new-password new-password
+   ```
+7. install cert-manager
    ```shell
    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
    ```
-7. deploy application by ArgoCD
-
-
+8. deploy application by ArgoCD
+    ```shell
+    # Deployed by ArgoCD
+    ```
 
 ## Reference
 1. [setup GKE](https://cloud.google.com/sdk/gcloud/reference/container/clusters/create)

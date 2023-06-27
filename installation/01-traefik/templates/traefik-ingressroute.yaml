@@ -6,7 +6,6 @@ metadata:
 spec:
   basicAuth:
     secret: traefik-auth
-
 ---
 apiVersion: v1
 kind: Secret

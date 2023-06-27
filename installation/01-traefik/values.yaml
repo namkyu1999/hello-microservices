@@ -1,0 +1,25 @@
+traefik:
+  enabled: true
+  ports:
+    web:
+      port: 80
+    websecure:
+      port: 443
+
+  ingressRoute:
+    dashboard:
+      enabled: false
+
+  securityContext:
+    capabilities:
+      drop: [ALL]
+      add: [NET_BIND_SERVICE]
+    readOnlyRootFilesystem: true
+    runAsGroup: 0
+    runAsNonRoot: false
+    runAsUser: 0
+  additionalArguments:
+    - "--serversTransport.insecureSkipVerify=true"
+adminConfig:
+  DOMAIN_NAME: namkyupark.tech
+  EMAIL: lak9348@gmail.com
