@@ -7,7 +7,7 @@ type Configurations struct {
 	DbServer               string `split_words:"true" default:"mongodb://localhost:27017"`
 	JwtSecret              string `split_words:"true" default:"404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970"`
 	JaegerServer           string `split_words:"true" default:"http://monitoring-jaeger-collector.monitoring.svc.cluster.local:14268"`
-	OpenTelemetryCollector string `split_words:"true" default:"http://otel-collector.observability.svc.cluster.local:4317"`
+	OpenTelemetryCollector string `split_words:"true" default:"otel-collector.observability.svc.cluster.local:4317"`
 }
 
 var Config Configurations
