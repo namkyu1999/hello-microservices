@@ -5,11 +5,15 @@ import (
 
 	"api-server/pkg/database/mongodb"
 	"api-server/pkg/rest_handlers"
+	"api-server/pkg/tracing"
 	"api-server/pkg/utils"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/kelseyhightower/envconfig"
 	log "github.com/sirupsen/logrus"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 )
 
 func init() {
@@ -25,6 +29,15 @@ func init() {
 }
 
 func main() {
+	// setup tracing
+	tp, tpErr := tracing.JaegerTraceProvider()
+	if tpErr != nil {
+		log.Fatal(tpErr)
+	}
+	otel.SetTracerProvider(tp)
+	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
+
+	// setup mongodb
 	client, err := mongodb.MongoConnection()
 	if err != nil {
 		log.Fatal(err)
@@ -34,10 +47,12 @@ func main() {
 
 	var mongodbOperator mongodb.MongoOperator = mongodb.NewMongoOperations(mongoClient)
 
+	// setup gin
 	gin.SetMode(gin.ReleaseMode)
 	gin.EnableJsonDecoderDisallowUnknownFields()
 	router := gin.New()
-	router.Use(rest_handlers.LoggingMiddleware())
+	router.Use(rest_handlers.LoggingMiddleware())  // logging middleware
+	router.Use(otelgin.Middleware("todo-service")) // tracing middleware
 	router.Use(gin.Recovery())
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},

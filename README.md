@@ -10,6 +10,19 @@ A TODO application with a microservice architecture.
 
 ## Architecture Diagram
 ![architecture_diagram](assets/architecture.png)
+
+## Folder Structure
+```
+.
+├── README.md
+├── api-server # todo application api server
+├── assets # assets for README.md
+├── authentication # todo application authentication server
+├── frontend # todo application frontend
+├── installation # helm chats for installation
+├── mongo # todo application mongo db
+```
+
 ## Prerequisites
 - buy your domain
 - create your GCP project
@@ -67,3 +80,5 @@ A TODO application with a microservice architecture.
 ## Reference
 1. [setup GKE](https://cloud.google.com/sdk/gcloud/reference/container/clusters/create)
 2. [setup traefik with cert-manager](https://www.padok.fr/en/blog/traefik-kubernetes-certmanager#access)
+3. [Jaeger 101](https://medium.com/jaegertracing/jaeger-tracing-a-friendly-guide-for-beginners-7b53a4a568ca)
+4. [OpenTelemetry 101](https://www.aspecto.io/blog/what-is-opentelemetry-the-infinitive-guide/?utm_source=jaeger-medium&utm_medium=post&utm_campaign=jaeger-tracing-the-ultimate-guide)

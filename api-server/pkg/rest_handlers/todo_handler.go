@@ -1,7 +1,6 @@
 package rest_handlers
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"time"
@@ -26,7 +25,6 @@ func CreateTodoHandler(mongodbOperator mongodb.MongoOperator) gin.HandlerFunc {
 	todoOperator := todo.NewTodoOperator(mongodbOperator)
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		ctx := context.Background()
 
 		var todoRequest CreateTodoRequest
 		err := c.BindJSON(&todoRequest)
@@ -45,7 +43,7 @@ func CreateTodoHandler(mongodbOperator mongodb.MongoOperator) gin.HandlerFunc {
 			Username:  todoRequest.Username,
 		}
 
-		err = todoOperator.CreateTodo(ctx, &todo)
+		err = todoOperator.CreateTodo(c.Request.Context(), &todo)
 		if err != nil {
 			c.Writer.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprint(c.Writer, "error while save to db : "+err.Error())
@@ -60,10 +58,9 @@ func GetTodoHandler(mongodbOperator mongodb.MongoOperator) gin.HandlerFunc {
 	todoOperator := todo.NewTodoOperator(mongodbOperator)
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		ctx := context.Background()
 		username := c.Param("username")
 
-		todos, err := todoOperator.GetTodos(ctx, username)
+		todos, err := todoOperator.GetTodos(c.Request.Context(), username)
 		if err != nil {
 			c.Writer.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprint(c.Writer, "error while get from db : "+err.Error())
@@ -78,12 +75,11 @@ func CompleteTodoHandler(mongodbOperator mongodb.MongoOperator) gin.HandlerFunc 
 	todoOperator := todo.NewTodoOperator(mongodbOperator)
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		ctx := context.Background()
 
 		var completeTodoRequest CompleteTodoRequest
 		err := c.BindJSON(&completeTodoRequest)
 
-		err = todoOperator.CompleteTodo(ctx, completeTodoRequest.Username, completeTodoRequest.Id)
+		err = todoOperator.CompleteTodo(c.Request.Context(), completeTodoRequest.Username, completeTodoRequest.Id)
 		if err != nil {
 			c.Writer.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprint(c.Writer, "error while get from db : "+err.Error())
@@ -98,12 +94,11 @@ func DeleteTodoHandler(mongoOperator mongodb.MongoOperator) gin.HandlerFunc {
 	todoOperator := todo.NewTodoOperator(mongoOperator)
 	return func(c *gin.Context) {
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
-		ctx := context.Background()
 
 		var completeTodoRequest CompleteTodoRequest
 		err := c.BindJSON(&completeTodoRequest)
 
-		err = todoOperator.DeleteTodo(ctx, completeTodoRequest.Username, completeTodoRequest.Id)
+		err = todoOperator.DeleteTodo(c.Request.Context(), completeTodoRequest.Username, completeTodoRequest.Id)
 		if err != nil {
 			c.Writer.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprint(c.Writer, "error while get from db : "+err.Error())

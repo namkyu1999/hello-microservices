@@ -9,6 +9,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.opentelemetry.io/contrib/instrumentation/go.mongodb.org/mongo-driver/mongo/otelmongo"
 )
 
 const (
@@ -54,6 +55,9 @@ func MongoConnection() (*mongo.Client, error) {
 	}
 
 	clientOptions := options.Client().ApplyURI(dbServer).SetAuth(credential)
+	// setup open-telemetry tracing
+	clientOptions.Monitor = otelmongo.NewMonitor()
+
 	client, err := mongo.Connect(backgroundContext, clientOptions)
 	if err != nil {
 		return nil, err
