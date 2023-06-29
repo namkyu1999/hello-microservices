@@ -34,7 +34,22 @@ A TODO application with a microservice architecture.
 2. setup Kubernetes Cluster
 3. install OpenTelemetry, Jaeger, Prometheus, Grafana
     ```shell
-    helm install monitoring ./installation/00-monitoring-helm -n monitoring --create-namespace
+    kubectl create namespace observability
+    # jaeger
+    kubectl create -f https://github.com/jaegertracing/jaeger-operator/releases/download/v1.46.0/jaeger-operator.yaml -n observability
+    kubectl create -f ./installation/00-monitoring/jaeger.yaml -n observability
+    
+    # prometheus operator, quick start guide: https://prometheus-operator.dev/docs/prologue/quick-start/
+    git clone https://github.com/prometheus-operator/kube-prometheus.git
+    kubectl create -f ./kube-prometheus/manifests/setup
+    # wait for namespaces and CRDs to become available, then
+    kubectl create -f ./kube-prometheus/manifests/
+
+    # prometheus
+    kubectl create -f ./installation/00-monitoring/prometheus.yaml
+    
+    # OpenTelemetry Collector
+    kubectl create -f ./installation/00-monitoring/otel-collector.yaml
     ```
 4. install ArgoCD
     ```shell
@@ -86,3 +101,6 @@ A TODO application with a microservice architecture.
 2. [setup traefik with cert-manager](https://www.padok.fr/en/blog/traefik-kubernetes-certmanager#access)
 3. [Jaeger 101](https://medium.com/jaegertracing/jaeger-tracing-a-friendly-guide-for-beginners-7b53a4a568ca)
 4. [OpenTelemetry 101](https://www.aspecto.io/blog/what-is-opentelemetry-the-infinitive-guide/?utm_source=jaeger-medium&utm_medium=post&utm_campaign=jaeger-tracing-the-ultimate-guide)
+5. [OpenTelemetry with Jaeger in Go](https://www.aspecto.io/blog/opentelemetry-go-getting-started/)
+6. [Prometheus vs Open Telemetry](https://www.timescale.com/blog/prometheus-vs-opentelemetry-metrics-a-complete-guide/)
+7. [OpenTelemtry collector example](https://github.com/open-telemetry/opentelemetry-go/tree/v1.16.0/example/otel-collector)

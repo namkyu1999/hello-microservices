@@ -1,19 +1,18 @@
 package main
 
 import (
+	"context"
 	"runtime"
 
 	"api-server/pkg/database/mongodb"
 	"api-server/pkg/rest_handlers"
-	"api-server/pkg/tracing"
+	"api-server/pkg/telemetry"
 	"api-server/pkg/utils"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/kelseyhightower/envconfig"
 	log "github.com/sirupsen/logrus"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
-	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/propagation"
 )
 
 func init() {
@@ -30,12 +29,16 @@ func init() {
 
 func main() {
 	// setup tracing
-	tp, tpErr := tracing.JaegerTraceProvider()
-	if tpErr != nil {
-		log.Fatal(tpErr)
+	ctx := context.Background()
+	shutdown, err := telemetry.InitProvider()
+	if err != nil {
+		log.Fatal(err)
 	}
-	otel.SetTracerProvider(tp)
-	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
+	defer func() {
+		if err := shutdown(ctx); err != nil {
+			log.Fatal("failed to shutdown TracerProvider: %w", err)
+		}
+	}()
 
 	// setup mongodb
 	client, err := mongodb.MongoConnection()

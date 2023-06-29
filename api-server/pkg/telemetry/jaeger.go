@@ -1,4 +1,4 @@
-package tracing
+package telemetry
 
 import (
 	"api-server/pkg/utils"
@@ -8,6 +8,7 @@ import (
 	semconv "go.opentelemetry.io/otel/semconv/v1.7.0"
 )
 
+// JaegerTraceProvider function use open-telemetry SDK + jaeger collector
 func JaegerTraceProvider() (*sdktrace.TracerProvider, error) {
 	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(utils.Config.JaegerServer + "/api/traces")))
 	if err != nil {

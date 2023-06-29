@@ -1,0 +1,48 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    serviceapp: otel-collector
+  name: otel-collector
+  namespace: observability
+spec:
+  endpoints:
+    - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+      interval: 30s
+      port: metrics
+  namespaceSelector:
+    matchNames:
+      - observability
+  selector:
+    matchLabels:
+      app: opentelemetry
+---
+apiVersion: monitoring.coreos.com/v1
+kind: Prometheus
+metadata:
+  labels:
+    app: prometheus
+    prometheus: service-prometheus
+  name: service-prometheus
+  namespace: monitoring
+spec:
+  alerting:
+    alertmanagers:
+      - name: alertmanager-main
+        namespace: monitoring
+        port: web
+  baseImage: quay.io/prometheus/prometheus
+  logLevel: info
+  paused: false
+  replicas: 2
+  retention: 2d
+  routePrefix: /
+  ruleSelector:
+    matchLabels:
+      prometheus: service-prometheus
+      role: alert-rules
+  serviceAccountName: prometheus-k8s
+  serviceMonitorSelector:
+    matchExpressions:
+      - key: serviceapp
+        operator: Exists
