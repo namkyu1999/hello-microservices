@@ -1,0 +1,29 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: jaeger
+  namespace: monitoring
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`jaeger.{{ .Values.adminConfig.DOMAIN_NAME }}`)
+      kind: Rule
+      services:
+        - name: monitoring-jaeger-query
+          port: 16686
+  tls:
+    secretName: jaeger.{{ .Values.adminConfig.DOMAIN_NAME }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: jaeger.{{ .Values.adminConfig.DOMAIN_NAME }}
+  namespace: monitoring
+spec:
+  dnsNames:
+    - jaeger.{{ .Values.adminConfig.DOMAIN_NAME }}
+  secretName: jaeger.{{ .Values.adminConfig.DOMAIN_NAME }}
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer

@@ -51,8 +51,8 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	gin.EnableJsonDecoderDisallowUnknownFields()
 	router := gin.New()
-	router.Use(rest_handlers.LoggingMiddleware())  // logging middleware
-	router.Use(otelgin.Middleware("todo-service")) // tracing middleware
+	router.Use(rest_handlers.LoggingMiddleware()) // logging middleware
+	router.Use(otelgin.Middleware("api-server"))  // tracing middleware
 	router.Use(gin.Recovery())
 	router.Use(cors.New(cors.Config{
 		AllowOrigins:     []string{"*"},

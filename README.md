@@ -6,6 +6,7 @@ A TODO application with a microservice architecture.
 - **ArgoCD UI Dashboard -> https://argocd.namkyupark.tech**
 - **Traefik UI Dashboard -> https://traefik.namkyupark.tech/dashboard/#/**
 - **Litmus UI Dashboard -> https://litmus.namkyupark.tech**
+- **Jaeger UI Dashboard -> https://jaeger.namkyupark.tech**
 
 
 ## Architecture Diagram
@@ -31,30 +32,33 @@ A TODO application with a microservice architecture.
 ## How to start
 1. complete prerequisites
 2. setup Kubernetes Cluster
-3. install ArgoCD
+3. install OpenTelemetry, Jaeger, Prometheus, Grafana
+    ```shell
+    helm install monitoring ./installation/00-monitoring-helm -n monitoring --create-namespace
+    ```
+4. install ArgoCD
     ```shell
     # quick start guide: https://argo-cd.readthedocs.io/en/stable/
     kubectl create namespace argocd
     kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
     ```
-4. install Litmus
+5. install Litmus
    ```shell
    # quick start guide: https://docs.litmuschaos.io/docs/getting-started/installation
    kubectl apply -f https://litmuschaos.github.io/litmus/3.0.0-beta8/litmus-3.0.0-beta8.yaml
    ```
-5. install cert-manager
+6. install cert-manager
    ```shell
    kubectl apply -f https://github.com/cert-manager/cert-manager/releases/download/v1.12.0/cert-manager.yaml
    ```
-6. install traefik
+7. install Traefik
     ```shell
-    cd ./installation/01-traefik-helm
-    helm install traefik . -n traefik-system --create-namespace
+    helm install traefik ./installation/01-traefik-helm -n traefik-system --create-namespace
     ```
-7. buy domain name & setup Cloud DNS
+8. buy domain name & setup Cloud DNS
    > set 'A record' to traefik external IP
    ![a_record](assets/a_record.png)
-8. Access to ArgoCD UI
+9. Access to ArgoCD UI
    ```shell
    # access to ArgoCD UI via https://argocd.your.domain
    # setup user
@@ -72,10 +76,10 @@ A TODO application with a microservice architecture.
    #    g, new-username, role:admin # you can set role what you want
    #    policy.default: role:''
    ```
-9. deploy application by ArgoCD
-    ```shell
-    # Deployed by ArgoCD
-    ```
+10. deploy application by ArgoCD
+     ```shell
+     # Access ArgoCD UI
+     ```
 
 ## Reference
 1. [setup GKE](https://cloud.google.com/sdk/gcloud/reference/container/clusters/create)

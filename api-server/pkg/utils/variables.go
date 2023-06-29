@@ -6,7 +6,7 @@ type Configurations struct {
 	DbPassword   string `split_words:"true" default:"1234"`
 	DbServer     string `split_words:"true" default:"mongodb://localhost:27017"`
 	JwtSecret    string `split_words:"true" default:"404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970"`
-	JaegerServer string `split_words:"true" default:"http://observability-jaeger-collector.observability.svc.cluster.local:14268"`
+	JaegerServer string `split_words:"true" default:"http://monitoring-jaeger-collector.monitoring.svc.cluster.local:14268"`
 }
 
 var Config Configurations

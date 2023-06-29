@@ -17,7 +17,7 @@ func JaegerTraceProvider() (*sdktrace.TracerProvider, error) {
 		sdktrace.WithBatcher(exp),
 		sdktrace.WithResource(resource.NewWithAttributes(
 			semconv.SchemaURL,
-			semconv.ServiceNameKey.String("todo-service"),
+			semconv.ServiceNameKey.String("api-server"),
 			semconv.DeploymentEnvironmentKey.String("production"),
 		)),
 	)
