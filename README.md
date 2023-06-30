@@ -7,7 +7,7 @@ A TODO application with a microservice architecture.
 - **Traefik UI Dashboard -> https://traefik.namkyupark.tech/dashboard/#/**
 - **Litmus UI Dashboard -> https://litmus.namkyupark.tech**
 - **Jaeger UI Dashboard -> https://jaeger.namkyupark.tech**
-
+- **Grafana UI Dashboard -> https://grafana.namkyupark.tech**
 
 ## Architecture Diagram
 ![architecture_diagram](assets/architecture.png)
@@ -32,7 +32,7 @@ A TODO application with a microservice architecture.
 ## How to start
 1. complete prerequisites
 2. setup Kubernetes Cluster
-3. install OpenTelemetry, Jaeger, Prometheus, Grafana
+3. install OpenTelemetry, Jaeger, Prometheus, Grafana, Grafana
     ```shell
     kubectl create namespace observability
     # jaeger

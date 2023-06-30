@@ -1,0 +1,29 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`grafana.{{ .Values.adminConfig.DOMAIN_NAME }}`)
+      kind: Rule
+      services:
+        - name: grafana
+          port: 3000
+  tls:
+    secretName: grafana.{{ .Values.adminConfig.DOMAIN_NAME }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: grafana.{{ .Values.adminConfig.DOMAIN_NAME }}
+  namespace: monitoring
+spec:
+  dnsNames:
+    - grafana.{{ .Values.adminConfig.DOMAIN_NAME }}
+  secretName: grafana.{{ .Values.adminConfig.DOMAIN_NAME }}
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
