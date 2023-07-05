@@ -15,5 +15,9 @@
 ## build from exist jar
 FROM openjdk:17-jdk-slim
 COPY build/libs/*.jar auth.jar
-ENTRYPOINT ["java","-jar","/auth.jar"]
+COPY opentelemetry-javaagent.jar opentelemetry-javaagent.jar
 EXPOSE 8080
+ENTRYPOINT java -javaagent:./opentelemetry-javaagent.jar \
+ -Dotel.exporter.otlp.endpoint=http://otel-collector.observability.svc.cluster.local:4317 \
+ -Dotel.resource.attributes=service.name=auth-server \
+ -jar auth.jar
