@@ -17,7 +17,7 @@ spring:
     otel:
       exporter:
         otlp:
-          endpoint: otel-collector.observability.svc.cluster.local:4317
+          endpoint: http://otel-collector.observability.svc.cluster.local:4317
 application:
   security:
     jwt:
