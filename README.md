@@ -94,6 +94,7 @@ A TODO application with a microservice architecture.
 10. deploy application by ArgoCD
      ```shell
      # Access ArgoCD UI
+     # application name: todo
      ```
 
 ## Reference

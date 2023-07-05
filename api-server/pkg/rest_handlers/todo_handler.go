@@ -24,6 +24,10 @@ type CompleteTodoRequest struct {
 func CreateTodoHandler(mongodbOperator mongodb.MongoOperator) gin.HandlerFunc {
 	todoOperator := todo.NewTodoOperator(mongodbOperator)
 	return func(c *gin.Context) {
+		if authMiddleware(c.GetHeader("Authorization")) != nil {
+			c.Writer.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 
 		var todoRequest CreateTodoRequest
@@ -57,6 +61,10 @@ func CreateTodoHandler(mongodbOperator mongodb.MongoOperator) gin.HandlerFunc {
 func GetTodoHandler(mongodbOperator mongodb.MongoOperator) gin.HandlerFunc {
 	todoOperator := todo.NewTodoOperator(mongodbOperator)
 	return func(c *gin.Context) {
+		if authMiddleware(c.GetHeader("Authorization")) != nil {
+			c.Writer.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 		username := c.Param("username")
 
@@ -74,6 +82,10 @@ func GetTodoHandler(mongodbOperator mongodb.MongoOperator) gin.HandlerFunc {
 func CompleteTodoHandler(mongodbOperator mongodb.MongoOperator) gin.HandlerFunc {
 	todoOperator := todo.NewTodoOperator(mongodbOperator)
 	return func(c *gin.Context) {
+		if authMiddleware(c.GetHeader("Authorization")) != nil {
+			c.Writer.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 
 		var completeTodoRequest CompleteTodoRequest
@@ -93,6 +105,10 @@ func CompleteTodoHandler(mongodbOperator mongodb.MongoOperator) gin.HandlerFunc 
 func DeleteTodoHandler(mongoOperator mongodb.MongoOperator) gin.HandlerFunc {
 	todoOperator := todo.NewTodoOperator(mongoOperator)
 	return func(c *gin.Context) {
+		if authMiddleware(c.GetHeader("Authorization")) != nil {
+			c.Writer.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
 
 		var completeTodoRequest CompleteTodoRequest

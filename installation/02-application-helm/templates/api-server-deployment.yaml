@@ -65,3 +65,5 @@ spec:
                 secretKeyRef:
                   name: {{ include "hello-microservices.secretname" . }}
                   key: DB_USER
+            - name: AUTH_SERVER
+              value: "{{ include "hello-microservices.fullname" . }}-auth-server-service:{{ .Values.backend.AuthServer.service.apiHTTPServer.port }}"

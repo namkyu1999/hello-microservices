@@ -54,6 +54,18 @@ public class AuthenticationService {
         .build();
   }
 
+  public Boolean validate(String bearerToken){
+    if (!bearerToken.startsWith("Bearer ")){
+      return false;
+    }
+    String jwt = bearerToken.substring(7);
+    String username = jwtService.extractUsername(jwt);
+    var isTokenValid = tokenRepository.findByToken(jwt)
+            .map(t -> !t.isExpired() && !t.isRevoked())
+            .orElse(false);
+    return jwtService.isTokenValid(jwt, username) && isTokenValid;
+  }
+
   private void saveUserToken(User user, String jwtToken) {
     var token = Token.builder()
         .user(user)
