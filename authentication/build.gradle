@@ -23,6 +23,12 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.postgresql:postgresql:42.5.4'
+	implementation ('org.springframework.cloud:spring-cloud-starter-sleuth:3.1.9'){
+		exclude group: "org.springframework.cloud", module: "spring-cloud-sleuth-brave"
+	}
+	implementation 'org.springframework.cloud:spring-cloud-sleuth-otel-autoconfigure:1.1.2'
+	implementation 'io.opentelemetry:opentelemetry-exporter-otlp-trace:1.14.0'
+	implementation 'io.grpc:grpc-okhttp:1.56.1'
 }
 
 jar {

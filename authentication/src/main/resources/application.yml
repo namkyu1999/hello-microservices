@@ -13,6 +13,11 @@ spring:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+  sleuth:
+    otel:
+      exporter:
+        otlp:
+          endpoint: otel-collector.observability.svc.cluster.local:4317
 application:
   security:
     jwt:
