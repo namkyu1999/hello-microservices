@@ -20,4 +20,5 @@ EXPOSE 8080
 ENTRYPOINT java -javaagent:./opentelemetry-javaagent.jar \
  -Dotel.exporter.otlp.endpoint=http://otel-collector.observability.svc.cluster.local:4317 \
  -Dotel.resource.attributes=service.name=auth-server \
+ -Dotel.exporter.otlp.protocol=http/protobuf \
  -jar auth.jar
