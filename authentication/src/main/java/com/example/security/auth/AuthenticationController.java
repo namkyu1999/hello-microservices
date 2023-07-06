@@ -44,7 +44,6 @@ public class AuthenticationController {
   public ResponseEntity<Object> validate(
           @RequestHeader String authorization
   ) {
-    logger.info("auth header:"+authorization);
     Boolean validate = service.validate(authorization);
     if (validate){
       return ResponseEntity.ok().build();
