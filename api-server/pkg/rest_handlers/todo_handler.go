@@ -25,7 +25,7 @@ type CompleteTodoRequest struct {
 func CreateTodoHandler(mongodbOperator mongodb.MongoOperator) gin.HandlerFunc {
 	todoOperator := todo.NewTodoOperator(mongodbOperator)
 	return func(c *gin.Context) {
-		if err := authMiddleware(c.GetHeader("Authorization")); err != nil {
+		if err := authMiddleware(c.Request.Context(), c.GetHeader("Authorization")); err != nil {
 			c.Writer.WriteHeader(http.StatusUnauthorized)
 			log.Error(err)
 			return
@@ -63,7 +63,7 @@ func CreateTodoHandler(mongodbOperator mongodb.MongoOperator) gin.HandlerFunc {
 func GetTodoHandler(mongodbOperator mongodb.MongoOperator) gin.HandlerFunc {
 	todoOperator := todo.NewTodoOperator(mongodbOperator)
 	return func(c *gin.Context) {
-		if err := authMiddleware(c.GetHeader("Authorization")); err != nil {
+		if err := authMiddleware(c.Request.Context(), c.GetHeader("Authorization")); err != nil {
 			c.Writer.WriteHeader(http.StatusUnauthorized)
 			log.Error(err)
 			return
@@ -85,7 +85,7 @@ func GetTodoHandler(mongodbOperator mongodb.MongoOperator) gin.HandlerFunc {
 func CompleteTodoHandler(mongodbOperator mongodb.MongoOperator) gin.HandlerFunc {
 	todoOperator := todo.NewTodoOperator(mongodbOperator)
 	return func(c *gin.Context) {
-		if err := authMiddleware(c.GetHeader("Authorization")); err != nil {
+		if err := authMiddleware(c.Request.Context(), c.GetHeader("Authorization")); err != nil {
 			c.Writer.WriteHeader(http.StatusUnauthorized)
 			log.Error(err)
 			return
@@ -109,7 +109,7 @@ func CompleteTodoHandler(mongodbOperator mongodb.MongoOperator) gin.HandlerFunc 
 func DeleteTodoHandler(mongoOperator mongodb.MongoOperator) gin.HandlerFunc {
 	todoOperator := todo.NewTodoOperator(mongoOperator)
 	return func(c *gin.Context) {
-		if err := authMiddleware(c.GetHeader("Authorization")); err != nil {
+		if err := authMiddleware(c.Request.Context(), c.GetHeader("Authorization")); err != nil {
 			c.Writer.WriteHeader(http.StatusUnauthorized)
 			log.Error(err)
 			return
