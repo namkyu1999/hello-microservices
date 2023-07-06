@@ -11,7 +11,7 @@ import (
 
 const AuthenticateEndpoint = "/api/v1/auth/validate"
 
-var tracer = otel.Tracer("api-server")
+var tracer = otel.Tracer("auth-server")
 
 func authMiddleware(ctx context.Context, jwt string) error {
 	_, span := tracer.Start(ctx, "auth-middleware")
