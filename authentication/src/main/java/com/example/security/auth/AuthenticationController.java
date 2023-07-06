@@ -40,11 +40,12 @@ public class AuthenticationController {
     return ResponseEntity.ok(service.authenticate(request));
   }
 
-  @PostMapping("/validate")
+  @GetMapping("/validate")
   public ResponseEntity<Object> validate(
-          @RequestBody ValidateRequest request
+          @RequestHeader String authorization
   ) {
-    Boolean validate = service.validate(request.token);
+    logger.info("auth header:"+authorization);
+    Boolean validate = service.validate(authorization);
     if (validate){
       return ResponseEntity.ok().build();
     }

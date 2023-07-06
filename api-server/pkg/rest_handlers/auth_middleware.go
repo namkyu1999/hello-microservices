@@ -1,8 +1,6 @@
 package rest_handlers
 
 import (
-	"bytes"
-	"encoding/json"
 	"errors"
 	"net/http"
 
@@ -12,14 +10,19 @@ import (
 const AuthenticateEndpoint = "/api/v1/auth/validate"
 
 func authMiddleware(jwt string) error {
-	var request = struct {
-		token string
-	}{
-		token: jwt,
+	req, err := http.NewRequest("GET", utils.Config.AuthServer+AuthenticateEndpoint, nil)
+	if err != nil {
+		return err
 	}
-	pbytes, _ := json.Marshal(request)
-	buff := bytes.NewBuffer(pbytes)
-	res, err := http.Post(utils.Config.AuthServer+AuthenticateEndpoint, "application/json", buff)
+
+	req.Header.Add("Authorization", jwt)
+
+	client := &http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer res.Body.Close()
 	if err != nil {
 		return err
 	} else if res.StatusCode != http.StatusOK {
