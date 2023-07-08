@@ -95,7 +95,7 @@ backend:
         ephemeral-storage: "100Mi"
       limits:
         memory: "150Mi"
-        cpu: "1250m"
+        cpu: "120m"
         ephemeral-storage: "100Mi"
     livenessProbe:
       failureThreshold: 5
