@@ -65,10 +65,13 @@ func main() {
 	}))
 
 	router.GET("/status", rest_handlers.StatusHandler)
-	router.GET("/todo/:username", rest_handlers.GetTodoHandler(mongodbOperator))
-	router.POST("/todo", rest_handlers.CreateTodoHandler(mongodbOperator))
-	router.PUT("/todo", rest_handlers.CompleteTodoHandler(mongodbOperator))
-	router.DELETE("/todo", rest_handlers.DeleteTodoHandler(mongodbOperator))
+
+	private := router.Group("")
+	private.Use(rest_handlers.AuthMiddleware())
+	private.GET("/todo/:username", rest_handlers.GetTodoHandler(mongodbOperator))
+	private.POST("/todo", rest_handlers.CreateTodoHandler(mongodbOperator))
+	private.PUT("/todo", rest_handlers.CompleteTodoHandler(mongodbOperator))
+	private.DELETE("/todo", rest_handlers.DeleteTodoHandler(mongodbOperator))
 
 	err = router.Run(":" + utils.Config.HttpPort)
 	if err != nil {
