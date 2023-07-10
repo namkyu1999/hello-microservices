@@ -81,7 +81,7 @@ backend:
         containerPort: 8001
     image:
       repository: lak9348/hm-api-server
-      tag: v1.0.10
+      tag: v1.0.11
       pullPolicy: "Always"
     service:
       type: ClusterIP

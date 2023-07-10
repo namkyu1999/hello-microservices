@@ -6,6 +6,7 @@ import (
 	"api-server/pkg/utils"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
+	"go.opentelemetry.io/contrib/instrumentation/net/http/otelhttp"
 )
 
 const AuthenticateEndpoint = "/api/v1/auth/validate"
@@ -26,7 +27,10 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		req.Header.Add("Authorization", c.GetHeader("Authorization"))
 
-		client := &http.Client{}
+		client := http.Client{
+			Transport: otelhttp.NewTransport(http.DefaultTransport),
+		}
+
 		res, err := client.Do(req)
 		if err != nil {
 			c.Writer.WriteHeader(http.StatusInternalServerError)
