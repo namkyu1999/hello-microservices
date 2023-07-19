@@ -69,12 +69,18 @@ A TODO application with a microservice architecture.
    ```
 7. install harbor
     ```shell
+    # Edit ./installation/harbor-values.yaml
+    # externalURL: registry.your.domain
+    # harborAdminPassword: your-password
     helm repo add harbor https://helm.goharbor.io
     helm repo update
     helm install harbor harbor/harbor -f ./installation/harbor-values.yaml -n harbor-system --create-namespace
     ```
 8. install Traefik
     ```shell
+    # Edit ./installation/01-traefik-helm/values.yaml
+    # adminConfig.DOMAIN_NAME: your-domain.com
+    # adminConfig.EMAIL: your-email@email.com
     helm install traefik ./installation/01-traefik-helm -n traefik-system --create-namespace
     ```
 9. buy domain name & setup Cloud DNS
@@ -82,6 +88,7 @@ A TODO application with a microservice architecture.
    ![a_record](assets/a_record.png)
 10. Access to ArgoCD UI
     ```shell
+    # quick start guide: https://argo-cd.readthedocs.io/en/stable/
     # access to ArgoCD UI via https://argocd.your.domain
     # setup user
     kubectl edit configmap argocd-cm -n argocd
@@ -99,8 +106,17 @@ A TODO application with a microservice architecture.
     ```
 11. deploy application by ArgoCD
      ```shell
+     # Edit ./installation/02-applicatioin-helm/values.yaml
+     # adminConfig.DOMAIN_NAME: your-domain.com
+     # adminConfig.EMAIL: your-email@your-domain
+     # frontend.image.repository: your-frontend-image-repository
+     # frontend.image.tag: your-frontend-image-tag
+     # backend.APIServer.image.repository: your-backend-image-repository
+     # backend.APIServer.image.tag: your-backend-image-tag
+     # backend.AuthServer.image.repository: your-authentication-image-repository
+     # backend.AuthServer.image.tag: your-authentication-image-tag
+     
      # Access ArgoCD UI
-     # application name: todo
      ```
 
 ## Reference
