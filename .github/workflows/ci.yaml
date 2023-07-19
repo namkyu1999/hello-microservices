@@ -31,21 +31,21 @@ jobs:
           context: ./api-server
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: registry.namkyupark.tech/hello-microservices/hm-api-server:'${{ steps.extract_version.outputs.version }}'
+          tags: registry.namkyupark.tech/hello-microservices/hm-api-server:${{ steps.extract_version.outputs.version }}
       - name: Build and push auth-server
         uses: docker/build-push-action@v4
         with:
           context: ./authentication
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: registry.namkyupark.tech/hello-microservices/hm-auth-server:'${{ steps.extract_version.outputs.version }}'
+          tags: registry.namkyupark.tech/hello-microservices/hm-auth-server:${{ steps.extract_version.outputs.version }}
       - name: Build and push frontend
         uses: docker/build-push-action@v4
         with:
           context: ./authentication
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: registry.namkyupark.tech/hello-microservices/hm-frontend-server:'${{ steps.extract_version.outputs.version }}'
+          tags: registry.namkyupark.tech/hello-microservices/hm-frontend-server:${{ steps.extract_version.outputs.version }}
       - name: Push helm chart
         uses: mikefarah/yq@master
         with:
