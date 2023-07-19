@@ -1,5 +1,4 @@
 nameOverride: ""
-
 adminConfig:
   JWTSecret: "hello-microservices@123"
   VERSION: "1.0.0"
@@ -12,7 +11,6 @@ adminConfig:
   POSTGRES_DB_PORT: "5432"
   DOMAIN_NAME: "namkyupark.tech"
   EMAIL: "lak9348@gmail.com"
-
 mongodb:
   enabled: true
   auth:
@@ -27,7 +25,6 @@ mongodb:
     enabled: false
     prometheusRule:
       enabled: false
-
 postgresql:
   enabled: true
   auth:
@@ -35,12 +32,11 @@ postgresql:
     username: "admin"
     password: "1234"
     database: "jwt_security"
-
 frontend:
   containerPort: 8080
   image:
     repository: registry.namkyupark.tech/hello-microservices/hm-frontend-server
-    tag: v1.0.0
+    tag: v1.0.1
     pullPolicy: "Always"
   replicas: 1
   service:
@@ -81,7 +77,7 @@ backend:
         containerPort: 8001
     image:
       repository: registry.namkyupark.tech/hello-microservices/hm-api-server
-      tag: v1.0.0
+      tag: v1.0.1
       pullPolicy: "Always"
     service:
       type: ClusterIP
@@ -134,7 +130,7 @@ backend:
         containerPort: 8080
     image:
       repository: registry.namkyupark.tech/hello-microservices/hm-auth-server
-      tag: v1.0.0
+      tag: v1.0.1
       pullPolicy: "Always"
     service:
       type: ClusterIP
