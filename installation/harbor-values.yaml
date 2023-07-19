@@ -1,0 +1,13 @@
+expose:
+  tls:
+    certSource: none
+  ingress:
+    annotations:
+      kubernetes.io/ingress.class: traefik
+      traefik.ingress.kubernetes.io/router.entrypoints: websecure
+      traefik.ingress.kubernetes.io/router.tls.certResolver: le
+    hosts:
+      core: registry.namkyupark.tech
+      notary: notary.namkyupark.tech
+externalURL: https://registry.namkyupark.tech
+harborAdminPassword: "1234"

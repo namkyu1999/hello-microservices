@@ -1,0 +1,40 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: harbor
+  namespace: harbor-system
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`registry.{{ .Values.adminConfig.DOMAIN_NAME }}`)
+      kind: Rule
+      services:
+        - name: harbor-portal
+          port: 80
+    - match: Host(`registry.{{ .Values.adminConfig.DOMAIN_NAME }}`) && PathPrefix(`/api/`, `/service/`, `/v2/`, `/chartrepo/`, `/c/`)
+      kind: Rule
+      services:
+        - name: harbor-core
+          port: 80
+    - match: Host(`notary.{{ .Values.adminConfig.DOMAIN_NAME }}`)
+      kind: Rule
+      services:
+        - name: harbor-notary-server
+          port: 4443
+  tls:
+    secretName: registry.{{ .Values.adminConfig.DOMAIN_NAME }}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: registry.{{ .Values.adminConfig.DOMAIN_NAME }}
+  namespace: harbor-system
+spec:
+  dnsNames:
+    - registry.{{ .Values.adminConfig.DOMAIN_NAME }}
+    - notary.{{ .Values.adminConfig.DOMAIN_NAME }}
+  secretName: registry.{{ .Values.adminConfig.DOMAIN_NAME }}
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer

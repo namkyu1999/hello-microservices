@@ -39,7 +39,7 @@ postgresql:
 frontend:
   containerPort: 8080
   image:
-    repository: lak9348/hm-frontend-server
+    repository: registry.namkyupark.tech/hello-microservices/hm-frontend-server
     tag: v1.0.0
     pullPolicy: "Always"
   replicas: 1
@@ -80,8 +80,8 @@ backend:
       - name: http
         containerPort: 8001
     image:
-      repository: lak9348/hm-api-server
-      tag: v1.0.13
+      repository: registry.namkyupark.tech/hello-microservices/hm-api-server
+      tag: v1.0.0
       pullPolicy: "Always"
     service:
       type: ClusterIP
@@ -133,8 +133,8 @@ backend:
       - name: http
         containerPort: 8080
     image:
-      repository: lak9348/hm-auth-server
-      tag: v1.0.8
+      repository: registry.namkyupark.tech/hello-microservices/hm-auth-server
+      tag: v1.0.0
       pullPolicy: "Always"
     service:
       type: ClusterIP

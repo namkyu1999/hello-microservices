@@ -1,0 +1,16 @@
+## release branch
+## build frontend
+## build api-server
+## build auth-server
+## helm
+## push to harbor
+## argocd!
+#
+#name: GitOps
+#on:
+#  pull_request:
+#    branches:
+#      - main
+#
+#jobs:
+#
