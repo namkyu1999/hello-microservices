@@ -46,14 +46,14 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: registry.namkyupark.tech/hello-microservices/hm-frontend-server:${{ steps.extract_version.outputs.version }}
-      - name: Push helm chart
+      - name: Update version info
         uses: mikefarah/yq@master
         with:
           cmd: |
-            yq -i '.frontend.image.tag = ${{ steps.extract_version.outputs.version }}' './installation/02-application-helm/values.yaml'
-            yq -i '.backend.APIServer.image.tag = ${{ steps.extract_version.outputs.version }}' './installation/02-application-helm/values.yaml'
-            yq -i '.backend.AuthServer.image.tag = ${{ steps.extract_version.outputs.version }}' './installation/02-application-helm/values.yaml'
-            yq -i '.version = ${{ steps.extract_version.outputs.version }}' './installation/02-application-helm/Chart.yaml'
+            yq -i '.frontend.image.tag = "${{ steps.extract_version.outputs.version }}"' './installation/02-application-helm/values.yaml'
+            yq -i '.backend.APIServer.image.tag = "${{ steps.extract_version.outputs.version }}"' './installation/02-application-helm/values.yaml'
+            yq -i '.backend.AuthServer.image.tag = "${{ steps.extract_version.outputs.version }}"' './installation/02-application-helm/values.yaml'
+            yq -i '.version = "${{ steps.extract_version.outputs.version }}"' './installation/02-application-helm/Chart.yaml'
       - uses: stefanzweifel/git-auto-commit-action@v4
         name: Commit new version info
         with:
