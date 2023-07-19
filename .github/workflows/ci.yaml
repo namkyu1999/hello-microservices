@@ -1,16 +1,71 @@
-## release branch
-## build frontend
-## build api-server
-## build auth-server
-## helm
-## push to harbor
-## argocd!
-#
-#name: GitOps
-#on:
-#  pull_request:
-#    branches:
-#      - main
-#
-#jobs:
-#
+name: GitOps
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Extract version info
+        run: echo "##[set-output name=version;]$(echo '${{ github.event.head_commit.message }}' | egrep -o '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')"
+        id: extract_version_name
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.HARBOR_USERNAME  }}
+          password: ${{ secrets.HARBOR_PASSWORD }}
+          registry: registry.namkyupark.tech
+      - name: Build and push api-server
+        uses: docker/build-push-action@v4
+        with:
+          context: ./api-server
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: registry.namkyupark.tech/hello-microservices/hm-api-server:${{ steps.extract_version_name.outputs.version }}
+      - name: Build and push auth-server
+        uses: docker/build-push-action@v4
+        with:
+          context: ./authentication
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: registry.namkyupark.tech/hello-microservices/hm-auth-server:${{ steps.extract_version_name.outputs.version }}
+      - name: Build and push frontend
+        uses: docker/build-push-action@v4
+        with:
+          context: ./authentication
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: registry.namkyupark.tech/hello-microservices/hm-frontend-server:${{ steps.extract_version_name.outputs.version }}
+      - name: Push helm chart
+        uses: mikefarah/yq@master
+        with:
+          cmd: |
+            yq -i '.frontend.image.tag = ${{ steps.extract_version_name.outputs.version }}' './installation/02-application-helm/values.yaml'
+            yq -i '.backend.APIServer.image.tag = ${{ steps.extract_version_name.outputs.version }}' './installation/02-application-helm/values.yaml'
+            yq -i '.backend.AuthServer.image.tag = ${{ steps.extract_version_name.outputs.version }}' './installation/02-application-helm/values.yaml'
+            yq -i '.version = ${{ steps.extract_version_name.outputs.version }}' './installation/02-application-helm/Chart.yaml'
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        name: Commit new version info
+        with:
+          branch: main
+          commit_options: '--no-verify --signoff'
+          file_pattern: '.'
+          repository: .
+      - name: Release Tag
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.extract_version_name.outputs.version }}
+          release_name: ${{ steps.extract_version_name.outputs.version }}
+
+
