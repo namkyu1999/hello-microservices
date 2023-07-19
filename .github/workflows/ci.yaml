@@ -44,7 +44,7 @@ jobs:
       - name: Build and push frontend
         uses: docker/build-push-action@v4
         with:
-          context: ./authentication
+          context: ./frontend
           platforms: linux/amd64
           push: true
           tags: registry.namkyupark.tech/hello-microservices/hm-frontend-server:${{ steps.extract_version.outputs.version }}
