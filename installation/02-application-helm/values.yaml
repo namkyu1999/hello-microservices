@@ -36,7 +36,7 @@ frontend:
   containerPort: 8080
   image:
     repository: registry.namkyupark.tech/hello-microservices/hm-frontend-server
-    tag: v1.0.2
+    tag: v1.0.3
     pullPolicy: "Always"
   replicas: 1
   service:
@@ -77,7 +77,7 @@ backend:
         containerPort: 8001
     image:
       repository: registry.namkyupark.tech/hello-microservices/hm-api-server
-      tag: v1.0.2
+      tag: v1.0.3
       pullPolicy: "Always"
     service:
       type: ClusterIP
@@ -130,7 +130,7 @@ backend:
         containerPort: 8080
     image:
       repository: registry.namkyupark.tech/hello-microservices/hm-auth-server
-      tag: v1.0.2
+      tag: v1.0.3
       pullPolicy: "Always"
     service:
       type: ClusterIP
