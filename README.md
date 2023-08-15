@@ -1,15 +1,6 @@
 # Hello 👋 Microservices
 A TODO application with a microservice architecture.
 
-## Demo
-- **TODO application -> https://todo.namkyupark.tech**
-- **ArgoCD UI Dashboard -> https://argocd.namkyupark.tech**
-- **Traefik UI Dashboard -> https://traefik.namkyupark.tech/dashboard/#/**
-- **Litmus UI Dashboard -> https://litmus.namkyupark.tech**
-- **Jaeger UI Dashboard -> https://jaeger.namkyupark.tech**
-- **Grafana UI Dashboard -> https://grafana.namkyupark.tech**
-- **Harbor UI Dashboard -> https://registry.namkyupark.tech**
-
 ## Architecture Diagram
 ![architecture_diagram](assets/architecture.png)
 
